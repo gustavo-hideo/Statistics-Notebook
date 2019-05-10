@@ -1,0 +1,210 @@
+---
+title: "Residuals"
+output: 
+  html_document:
+    theme: cosmo
+---
+
+
+```{r, include=FALSE}
+library(tidyverse)
+```
+
+```{r, include=FALSE}
+cc <- read_csv("../../Data/CivicCorolla.csv")
+```
+
+```{r, include=FALSE}
+myTheme <- theme(panel.background = element_blank(),
+                 panel.grid = element_blank())
+```
+
+
+
+----
+
+## Residuals {.tabset .tabset-fade}
+
+
+
+
+**Residuals** are the difference between the observed value of $Y_i$ (data point) and the predicted (or estimated) value for that point $\hat{Y}_i$ (point on regression line) <br>
+Residual is denoted by $r_i$ as follows:
+
+$$
+r_i = \underbrace{Y_i}_\text{observed Y-value} - \underbrace{\hat{Y}_i}_\text{predicted Y-value}
+$$
+
+### Residuals
+
+
+How the mileage in Civics and Corollas affect their prices?
+
+
+
+<br>
+
+```{r}
+lm1 <- lm(Price ~ Mileage, data = cc)
+
+lm1 %>% 
+  ggplot(aes(Mileage, Price)) +
+  geom_point(aes(), alpha = .5) +
+  geom_smooth(method = "lm", se = F, alpha = ".5") +
+  geom_segment(aes(xend = Mileage, yend = predict(lm1)), color = "firebrick") +
+  labs(title = "Residuals",
+       x = "Mileage",
+       y = "Price") +
+  myTheme +
+  theme(plot.title = element_text(color = "firebrick"))
+```
+
+<br>
+<br>
+<br>
+<br>
+
+
+Knowing a single residual is useful, for example,  to learn if a car is sold above or bellow average according to its mileage <br>
+<br>
+How would it apply for your car? <br>
+<br>
+
+  * `Mileage`: 16296
+  * `Price`: $12499 
+  
+```{r}
+x <- cc %>% filter(Mileage == 16296, Price == 12499)
+
+lm1 %>% 
+  ggplot(aes(Mileage, Price)) +
+  geom_point(aes(), alpha = .3) +
+  geom_point(x = 16296, y = 12499, color = "darkgoldenrod4", size = 4) +
+  geom_smooth(method = "lm", se = F, alpha = ".5") +
+  geom_segment(aes(xend = Mileage, yend = predict(lm1)), alpha = .3) +
+  geom_segment(aes(), data = x, xend = 16296, yend = predict(lm1, data.frame(Mileage = 16296)), color = "darkgoldenrod4", size = 1) +
+  labs(title = "Defined car is underpriced in $3,747",
+       x = "Mileage",
+       y = "Price") +
+  myTheme +
+  theme(plot.title = element_text(color = "darkgoldenrod4"))
+```
+
+<br>
+<br>
+
+Model of the calculation above:
+
+$$
+\underbrace{-3,747}_\text{residual} = \underbrace{12,499}_\text{observed price} - \underbrace{16,246}_\text{predicted price}
+$$
+
+
+
+
+
+
+### Sum of Squares {.tabset .tabset-fade}
+
+
+
+
+
+There are 3 important ways we can measure the fit of a line: <br>
+
+  * `SSE`
+  * `SSR`
+  * `SSTO`
+  
+The concept for each sum of squares are found in the next tabs.
+
+#### Sum of Squared Errors | `SSE`
+
+`SSE` measures how much the **residuals** (or y-values) deviate form the **line** (regression line) <br>
+<br>
+
+How to calculate `SSE`:
+
+$SSTO - SSR$, or:
+
+```{r, eval=FALSE}
+sum((Y - mylm$fit)^2)
+```
+
+The lowest the `SSE` is, the better. Meaning that the residuals are low and the observed values are not very far from the regression line. <br> 
+
+<br>
+
+
+#### Sum of Squares Regression | `SSR`
+
+`SSR` measures how much the **regression line** deviates from the **average Y-value** <br>
+<br>
+
+How to calculate `SSR`:
+
+$SSTO - SSE$, or:
+
+```{r, eval=FALSE}
+sum((mylm$fit - mean(Y))^2)
+```
+
+The largest the `SSR` is, the better, because means that `SSE` is small. <br>
+
+<br>
+
+
+#### Total Sum of Squares | `SSTO`
+
+`SSTO` measures how much the **y-values** (or residuals) deviate from the **average Y-value** <br>
+<br>
+
+How to calculate `SSTO`:
+
+$SSE + SSR$, or:
+
+```{r, eval=FALSE}
+sum((Y - mean(Y))^2)
+```
+
+<br>
+<br>
+<br>
+
+The concepts of the **sum of squares** are important because lead us to **R-squared ($R^2$)** in the next tab.
+
+
+
+
+
+
+
+
+### R-squared
+
+
+
+$R^2$ is the proportion of variance in $Y$, telling how well the data fit the regression model. R-squared can vary from 0 to 1. The highest the value, the better is the fit. <br>
+<br>
+
+$R^2$ represents the percent of the data that fits the regression model. 
+
+The $R^2$ can be found on the following ways: <br>
+<br>
+
+$SSR \over{SSTO}$ <br><br><br>
+$1 - {SSE \over{SSTO}}$ <br><br><br>
+${\underbrace{r}_\text{correlation}} ^2$
+
+<br>
+<br>
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,375 @@
+---
+title: "Skills Quiz: Residuals, Sums of Squares, and R-squared"
+output: 
+  html_document:
+    theme: cerulean
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
+
+
+## Instructions
+
+Use this file to keep a record of your work as you complete the "Skills Quiz: Residuals, Sums of Squares, and R-squared" assignment in Canvas.
+
+
+----
+
+<!-- Note: The {} after each Problem and Part header allows you to keep track of what work you have completed. Write something like {Done} once you complete each problem and your html file will then show you a nice summary of what you have "done" already. -->
+
+## Problem 1 {done}
+
+Open the `Orange` dataset in R. As stated in the help file for this data set, "The Orange data... records of the growth of orange trees." 
+
+Perform a simple linear regression of the circumference of the tree based on its age in days.
+
+```{r}
+lm.orange <- lm(circumference ~ age, data = Orange)
+summary(lm.orange)
+```
+
+### Part (a) {done}
+
+Type out the mathematical equation for this regression model and label both $Y$ and $X$ in the equation.
+
+<div class="YourAnswer">
+
+$$
+  \underbrace{Y_i}_\text{circumference} = \beta_0 + \beta_1 \underbrace{X_i}_\text{age} + \epsilon_i \quad \text{where} \ \epsilon_i \sim N(0,\sigma^2) 
+$$
+
+</div>
+
+
+### Part (b) {done}
+ 
+Plot a scatterplot of the data with your regression line overlaid.
+
+<div class="YourAnswer">
+
+```{r}
+Orange %>% 
+  ggplot(aes(age, circumference)) +
+  geom_point(aes(), color = "darkorange2") +
+  geom_smooth(method = "lm", se = F, color = "firebrick") +
+  labs(title = "Growth of Orange Trees",
+       subtitle = "Orange data set",
+       y = "Circumference of Tree in mm (circumference)",
+       x = "Age of Tree in Days (age)") +
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank())
+
+```
+
+</div>
+
+
+### Part (c) {done}
+
+State and interpret the slope and y-intercept of this regression. Are they meaningful for this data?
+
+<div class="YourAnswer">
+
+**Slope** <br>
+The average `circumefence` increases in $0.11$ (mm) for each day increasing in `age` <br>
+
+<br>
+**Y-intercept** <br>
+The average `circumference` is $17.4$ when `age` is $0$, in other words, when the tree is planted.
+
+</div> 
+ 
+ 
+### Part (d) {done}
+
+What are the values of SSE, SSR, SSTO, $R^2$, and the correlation $r$ for this regression?
+ 
+<div class="YourAnswer">
+
+```{r}
+sse <- sum((Orange$circumference - lm.orange$fit) ^ 2)
+sse
+
+ssr <- sum((lm.orange$fit - mean(Orange$circumference)) ^ 2)
+ssr
+
+ssto <- sum((Orange$circumference - mean(Orange$circumference)) ^ 2)
+ssto
+
+r2 <- ssr/ssto
+r2
+
+r <- sqrt(r2)
+r
+```
+
+</div>
+
+
+### Part (e) {done}
+
+How do the values of SSR and SSTO relate to the correlation?
+
+<div class="YourAnswer">
+
+The `SSR` divided by `SSTO` gives the proportion of variation in `Y` explained by the regression, which is R-squared. 
+
+</div>
+
+
+### Part (f) {}
+
+What circumference would we expect orange trees to have on average after 3 years, based on this regression? 
+
+<div class="YourAnswer">
+
+```{r}
+predict(lm.orange, data.frame(age = 365), interval = "prediction")[1]
+```
+
+</div>
+
+
+
+----
+
+## Problem 2 {done}
+
+Open the **mtcars** dataset in R. Fit three different regression models to the data that can each be used to explain average gas mileage of a vehicle (`mpg`). 
+
+* The first regression should use the weight (`wt`) of the vehicle as the explanatory variable.
+* The second should use the number of cylinders (`cyl`) of the engine of the vehicle as the explanatory variable.
+* The third should use the gross horsepower of the vehicle (`hp`) as the explanatory variable.
+
+### Part (a) {done}
+
+Plot all three regressions in three separate plots.
+
+<div class="YourAnswer">
+
+```{r}
+plot.f <- function(x, y, title) {
+  p <- mtcars %>% 
+    ggplot(aes(x, y)) +
+    geom_point(aes(), color = "lightsteelblue") +
+    geom_smooth(method = "lm", se = F, color = "steelblue") +
+    labs(title = title) +
+    theme(panel.background = element_blank(),
+        panel.grid = element_blank())
+p
+}
+
+plot.f(mtcars$wt, mtcars$mpg, "Weight")
+plot.f(mtcars$cyl, mtcars$mpg, "Cylinders")
+plot.f(mtcars$hp, mtcars$mpg, "Horse Power")
+
+
+```
+
+</div>
+
+
+### Part (b) {done}
+
+State the values of SSE, SSR, SSTO, and $R^2$ for each regression. 
+
+<div class="YourAnswer">
+
+##### `mpg ~ wt`
+
+```{r}
+lm.wt <- lm(mpg ~ wt, data = mtcars)
+```
+
+**SSE** <br>
+```{r}
+sse <- round(sum((mtcars$mpg - lm.wt$fit) ^2), 2)
+sse
+```
+
+**SSR** <br>
+```{r}
+ssr <- round(sum((lm.wt$fit - mean(mtcars$mpg)) ^2), 2)
+ssr
+```
+
+**SSTO** <br>
+```{r}
+ssto <- round(sum((mtcars$mpg - mean(mtcars$mpg)) ^2), 2)
+ssto
+```
+
+**R^2** <br>
+```{r}
+r2 <- round(ssr / ssto, 2)
+r2
+```
+
+
+##### `mpg ~ cyl`
+
+```{r}
+lm.cyl <- lm(mpg ~ cyl, data = mtcars)
+```
+
+**SSE** <br>
+```{r}
+sse <- round(sum((mtcars$mpg - lm.cyl$fit) ^2), 2)
+sse
+```
+
+**SSR** <br>
+```{r}
+ssr <- round(sum((lm.cyl$fit - mean(mtcars$mpg)) ^2), 2)
+ssr
+```
+
+**SSTO** <br>
+```{r}
+ssto <- round(sum((mtcars$mpg - mean(mtcars$mpg)) ^2), 2)
+ssto
+```
+
+**R^2** <br>
+```{r}
+r2 <- round(ssr / ssto, 2)
+r2
+```
+
+
+
+
+##### `mpg ~ hp`
+
+```{r}
+lm.hp <- lm(mpg ~ hp, data = mtcars)
+```
+
+**SSE** <br>
+```{r}
+sse <- round(sum((mtcars$mpg - lm.hp$fit) ^2), 2)
+sse
+```
+
+**SSR** <br>
+```{r}
+ssr <- round(sum((lm.hp$fit - mean(mtcars$mpg)) ^2), 2)
+ssr
+```
+
+**SSTO** <br>
+```{r}
+ssto <- round(sum((mtcars$mpg - mean(mtcars$mpg)) ^2), 2)
+ssto
+```
+
+**R^2** <br>
+```{r}
+r2 <- round(ssr / ssto, 2)
+r2
+```
+
+
+
+
+
+
+</div>
+
+
+### Part (c) {done}
+
+Compare the values from **Part (b)** across each regression. Consider these questions as you compare these numbers.
+
+* What insight do these numbers give about the regression?
+* Which numbers change, which stay the same, in these regressions? Why?
+* Which regression is best at explaining average `mpg` according to these numbers?
+
+<div class="YourAnswer">
+
+`wt`, because has the lowest SSE and highest correlation.
+
+</div> 
+ 
+ 
+
+
+
+----
+
+Before we can really trust the $R^2$ value from a regression model, there are important diagnostic checks to perform on the regression. 
+
+You now have a better understanding of what a **residual** and a **fitted-value** are in regression. With that improved knowledge, work through the following problem.
+
+
+
+----
+
+## Problem 3 {}
+
+Check the following technical details for each of the three regressions of **Problem 2**.
+
+### Part (a) {}
+
+Create a (1) residuals vs. fitted-values plot, (2) Q-Q Plot of the residuals, and (3) residuals vs. order plot for each regression of **Problem 2**.
+
+<div class="YourAnswer">
+
+```{r}
+# Type your code here
+```
+
+</div>
+
+
+### Part (b) {}
+
+Explain, as best you understand currently, what each of these three plots show for these regressions.
+
+<div class="YourAnswer">
+
+Type your answer here...
+
+</div>
+
+
+### Part (c) {}
+
+Comment on whether or not we should trust the $R^2$ value from each of your three regressions based on your plots in Part (a). 
+
+<div class="YourAnswer">
+
+Type your answer here...
+
+</div>
+
+
+
+----
+
+
+
+
+
+
+
+
+
+
+
+<style>
+
+.YourAnswer {
+  color: #317eac;
+  padding: 10px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: skyblue4;
+  border-radius: 5px;
+}
+
+</style>
+
+ 
+ 

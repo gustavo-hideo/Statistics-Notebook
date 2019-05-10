@@ -1,0 +1,345 @@
+---
+title: "Skills Quiz: Simple Linear Regression"
+output: 
+  html_document:
+    theme: cosmo
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
+
+
+## Instructions
+
+Use this file to keep a record of your work as you complete the "Skills Quiz: Simple Linear Regression" assignment in I-Learn.
+
+
+----
+
+<!-- Note: The {} after each Problem and Part header allows you to keep track of what work you have completed. Write something like {Done} once you complete each problem and your html file will then show you a nice summary of what you have "done" already. -->
+
+## Problem 1 {done}
+
+Open the `airquality` dataset in R. Perform a regression of daily average `Wind` speed using the daily maximum `Temp`erature as the explanatory variable.
+
+
+
+### Part (a) {done}
+
+Type out the mathematical equation for this regression model and label both $Y$ and $X$ in the equation.
+
+<div class="YourAnswer">
+
+$$
+  \underbrace{Y_i}_\text{Wind} = \beta_0 + \beta_1 \underbrace{X_1}_\text{Temp} + \epsilon_i \quad \text{where} \ \epsilon_i \sim N(0,\sigma^2)
+$$
+
+</div>
+
+
+### Part (b) {done}
+ 
+Fit and summarize a simple linear regression model for this data.
+
+<div class="YourAnswer">
+
+```{r}
+lm1 <- lm(Wind ~ Temp, data = airquality)
+summary(lm1)
+```
+
+</div>
+
+
+### Part (c) {done}
+
+Type out the estimated equation for this regression model using your estimates found in part (b).
+
+<div class="YourAnswer">
+
+$$
+  \hat{Y}_i = 23.234 - 0.171 * X_1
+$$
+
+</div> 
+ 
+ 
+### Part (d) {done}
+
+Plot the data and the estimated regression model.
+ 
+<div class="YourAnswer">
+
+```{r}
+plot(Wind ~ Temp, data = airquality, col = "lightskyblue3", pch = 16)
+abline(lm1, col = "steelblue")
+```
+
+</div>
+
+
+### Part (e) {done}
+
+Use your model to predict the average daily average Wind speed for an outside temperature of 72 degrees F.
+
+<div class="YourAnswer">
+
+```{r}
+round(predict(lm1, data.frame(Temp = 72, interval = "prediction")),2)
+```
+
+</div>
+
+
+### Part (f) {done}
+
+Write out an interpretation of the slope and intercept of your model. Are both meaningful for this data?
+ 
+<div class="YourAnswer">
+
+They are both meaningful. <br><br>
+
+Slope: <br>
+An increase of $1$ degree F in maximum `Temp` results in a $0.17$ **decrease** in the average daily `Wind` speed. <br><br>
+
+Intercept: <br>
+When the daily maximum `Temp` is $0$ degrees F, the average daily `Wind` speed is estimated to be $23.234$ mph.
+
+</div>
+
+
+
+----
+
+## Problem 2 {done}
+
+Open the **mtcars** dataset in R. Fit a regression model to the data that can be used to explain average gas mileage of a vehicle (`mpg`) using the weight (`wt`) of the vehicle.
+
+### Part (a) {done}
+
+Type out the mathematical equation for this regression model and label both $Y$ and $X$ in the equation.
+
+<div class="YourAnswer">
+
+$$
+  \underbrace{Y_i}_\text{mpg} = \beta_0 + \beta_1 \underbrace{X_1}_\text{wt} + \epsilon_i \quad \text{where} \ \epsilon_1 \sim N(0, \sigma^2)
+$$
+
+</div>
+
+
+### Part (b) {done}
+
+Fit and summarize a simple linear regression model for this data.
+
+<div class="YourAnswer">
+
+```{r}
+lm2 <- lm(mpg ~ wt, data = mtcars)
+summary(lm2)
+```
+
+</div>
+
+
+### Part (c) {done}
+
+Type out the estimated equation for this regression model using your estimates found in part (b).
+
+<div class="YourAnswer">
+
+$$
+  \hat{Y}_i = 37.29 * 5.35
+$$
+
+</div> 
+ 
+ 
+### Part (d) {done}
+
+Plot the data and the estimated regression model.
+ 
+<div class="YourAnswer">
+
+```{r}
+plot(mpg ~ wt, mtcars, pch = 16, col = "lightskyblue3")
+abline(lm2, col = "steelblue")
+```
+
+</div>
+
+
+### Part (e) {done}
+
+Use your model to predict the average gas mileage (mpg) for a vehicle that weighs 3,000 lbs. (Hint: ?mtcars)
+
+<div class="YourAnswer">
+
+```{r}
+predict(lm2, data.frame(wt = 3))
+```
+
+</div>
+
+
+### Part (f) {done}
+
+Write out an interpretation of the slope and intercept of your model. Are both meaningful for this data?
+ 
+<div class="YourAnswer">
+
+Both meaningful. <br> <br>
+
+Slope: <br>
+An increase of 1,000 lbs in the weight of a vehicle results in a 5.34 mpg decrease in the average gas mileage of such vehicles <br><br>
+
+Intercept: <br>
+The average gas mileage of vehicles that weigh nothing (0 lbs) is estimated to be 37.29 mpg.
+
+</div>
+
+
+
+----
+
+Before we can really trust the interpretation of and predictions from a regression model, there are important diagnostic checks to perform on the regression. These diagnostics are even more important to perform when p-values or confidence intervals are used as part of the analysis. In future weeks of this course, we will focus in greater detail on the technical details of regression: hypothesis tests, confidence intervals, and diagnostic checks. However, for the sake of completeness, the following problems have run through these technical details, even though we lack full understanding about them for the time being.
+
+
+
+----
+
+## Problem 3 {}
+
+Use your regression for the `airquality` data set in **Problem 1** to complete the following "technical details" for this regression.
+
+### Part (a) {done}
+
+Create a (1) residuals vs. fitted-values plot, (2) Q-Q Plot of the residuals, and (3) residuals vs. order plot.
+
+<div class="YourAnswer">
+
+```{r}
+plot(lm1)
+```
+
+</div>
+
+
+### Part (b) {}
+
+Explain, as best you understand currently, what each of these three plots show for this regression.
+
+<div class="YourAnswer">
+
+Type your answer here...
+
+</div>
+
+
+### Part (c) {}
+
+Report the p-value for the test of these hypotheses for your regression.
+
+**Intercept Hypotheses**
+
+$$
+  H_0: \beta_0 = 0 \quad \text{vs.} \quad H_a: \beta_0 \neq 0
+$$
+
+**Slope Hypotheses**
+
+$$
+  H_0: \beta_1 = 0 \quad \text{vs.} \quad  H_a: \beta_1 \neq 0
+$$
+
+Comment on whether or not we should trust each p-value based on your plots in Part (a). 
+
+<div class="YourAnswer">
+
+Type your answer here...
+
+</div>
+
+
+
+----
+
+## Problem 4 {}
+
+Use your regression for the `mtcars` data set in **Problem 2** to complete the following "technical details" for this regression.
+
+### Part (a) {}
+
+Create a (1) residuals vs. fitted-values plot, (2) Q-Q Plot of the residuals, and (3) residuals vs. order plot.
+
+<div class="YourAnswer">
+
+```{r}
+# Type your code here
+```
+
+</div>
+
+
+### Part (b) {}
+
+Explain, as best you understand currently, what each of these three plots show for this regression.
+
+<div class="YourAnswer">
+
+Type your answer here...
+
+</div>
+
+
+### Part (c) {}
+
+Report the p-value for the test of these hypotheses for your regression.
+
+**Intercept Hypotheses**
+
+$$
+  H_0: \beta_0 = 0 \quad \text{vs.} \quad H_a: \beta_0 \neq 0
+$$
+
+**Slope Hypotheses**
+
+$$
+  H_0: \beta_1 = 0 \quad \text{vs.} \quad  H_a: \beta_1 \neq 0
+$$
+
+Comment on whether or not we should trust each p-value based on your plots in Part (a). 
+
+<div class="YourAnswer">
+
+Type your answer here...
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+
+.YourAnswer {
+  color: #317eac;
+  padding: 10px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: skyblue4;
+  border-radius: 5px;
+}
+
+</style>
+
+ 
+ 
